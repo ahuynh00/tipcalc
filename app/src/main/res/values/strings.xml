@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">tipcalc</string>
+    <string name="tip_button">Tip</string>
+    <string name="edit_text_label">Amount</string>
+    <string-array name="tip_percent">
+        <item>10%</item>
+        <item>15%</item>
+        <item>18%</item>
+        <item>20%</item>
+    </string-array>
 </resources>

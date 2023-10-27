@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
@@ -20,7 +22,6 @@ class MainActivity : AppCompatActivity() {
                 etTotal!!.removeTextChangedListener(this);
 
                 val totalInput = dollarsToCents(s.toString());
-                Log.d("cleanInput", totalInput.toString());
                 bTip!!.isEnabled = (totalInput !== 0);
 
                 etTotal!!.setText(formatToDollars(totalInput))
@@ -39,16 +40,26 @@ class MainActivity : AppCompatActivity() {
         bTip!!.isEnabled = false;
         etTotal!!.addTextChangedListener(textWatcher);
 
+        val percent: Spinner = findViewById(R.id.tip_percent)
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.tip_percent,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            percent.adapter = adapter
+        }
+
         bTip!!.setOnClickListener() {
-            Log.i("button", "button clicked");
             val total = dollarsToCents(etTotal!!.text.toString())
             total ?.let {
-                val tip = calculateTip(total);
-                Log.i("tipcalc", tip.toString())
-                Log.i("formatting", formatToDollars(tip))
+                val percentage = percent.selectedItem.toString().replace("%", "").toInt();
+                val tip = calculateTip(total, percentage);
                 Toast.makeText(applicationContext, formatToDollars(tip), Toast.LENGTH_LONG).show();
+                Log.i("spinnerSelection", percent.selectedItem.toString());
             }
         }
+
     }
     private fun calculateTip(cents: Int, percent: Int = 15) : Int {
         return cents * percent / 100;
@@ -74,11 +85,5 @@ class MainActivity : AppCompatActivity() {
         val centsInt = cents.toInt();
         return centsInt;
     }
-
-    // spinner
-    // screenshots
-
-
-
 
 }
